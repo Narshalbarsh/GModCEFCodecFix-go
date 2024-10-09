@@ -125,6 +125,7 @@ func main() {
 	})
 	launchButton.Importance = widget.HighImportance
 
+	ui.AttachToConsole()
 	ui.InterceptTextOutputToGui(textBox)
 
 	mainWindowContent := container.NewBorder(

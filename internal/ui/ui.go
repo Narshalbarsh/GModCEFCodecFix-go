@@ -58,39 +58,38 @@ func (b *BottomRightLayout) MinSize(objects []fyne.CanvasObject) fyne.Size {
 }
 
 // implements the io.Writer interface
-type CustomStream struct {
+type outputToGuiRedirector struct {
 	orig                      io.Writer
 	textWidgetWriter          func(string)
 	textWidgetPositionUpdater func()
 }
 
-func (c *CustomStream) Write(p []byte) (n int, err error) {
+func (c *outputToGuiRedirector) Write(p []byte) (n int, err error) {
 	c.textWidgetWriter(string(p))
 	c.textWidgetPositionUpdater()
-	return c.orig.Write(p)
+
+	// Don't return length returned from writing to the original
+	// because on Windows this might not be available at all
+	// so just return the full length.
+	c.orig.Write(p)
+	return len(p), nil
 }
 
 // Write all of the stodut and stderr to a text widget
 func InterceptTextOutputToGui(textBox *TransparentEntry) {
-	origStdout := os.Stdout
-	origStderr := os.Stderr
-	rStdout, wStdout, _ := os.Pipe()
-	rStderr, wStderr, _ := os.Pipe()
 	textBoxPositionUpdater := func() {
 		textBox.CursorRow = (len(textBox.Text) - 1)
 	}
-	stdoutStream := &CustomStream{
-		orig:                      origStdout,
-		textWidgetWriter:          textBox.Append,
-		textWidgetPositionUpdater: textBoxPositionUpdater,
+	redirectOutput := func(orig **os.File) {
+		readPipe, writePipe, _ := os.Pipe()
+		outputStream := &outputToGuiRedirector{
+			orig:                      *orig,
+			textWidgetWriter:          textBox.Append,
+			textWidgetPositionUpdater: textBoxPositionUpdater,
+		}
+		*orig = writePipe
+		go io.Copy(outputStream, readPipe)
 	}
-	stderrStream := &CustomStream{
-		orig:                      origStderr,
-		textWidgetWriter:          textBox.Append,
-		textWidgetPositionUpdater: textBoxPositionUpdater,
-	}
-	os.Stdout = wStdout
-	os.Stderr = wStderr
-	go io.Copy(stdoutStream, rStdout)
-	go io.Copy(stderrStream, rStderr)
+	redirectOutput(&os.Stdout)
+	redirectOutput(&os.Stderr)
 }

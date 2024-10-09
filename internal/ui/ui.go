@@ -67,7 +67,8 @@ type CustomStream struct {
 func (c *CustomStream) Write(p []byte) (n int, err error) {
 	c.textWidgetWriter(string(p))
 	c.textWidgetPositionUpdater()
-	return c.orig.Write(p)
+	c.orig.Write(p)
+	return len(p), nil
 }
 
 // Write all of the stodut and stderr to a text widget

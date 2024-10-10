@@ -52,6 +52,10 @@ func GetTargetPlatform(steamPath string, appId uint32) (string, error) {
 			targetPlatform = "windows"
 		}
 	}
+	// Use matching name from python sys.platform
+	if targetPlatform == "windows" {
+		targetPlatform = "win32"
+	}
 	return targetPlatform, nil
 }
 

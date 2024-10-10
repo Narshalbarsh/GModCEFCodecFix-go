@@ -81,7 +81,7 @@ func process() {
 		return
 	}
 
-	gmodGamePath, err := steam_util.FindGamePath(steamPath, *lastSteamUser, GMOD_APP_DIR)
+	gmodGamePath, err := steam_util.FindGamePath(*steamLibraries, *lastSteamUser, GMOD_APP_DIR)
 	if err != nil {
 		fmt.Println(err)
 		return

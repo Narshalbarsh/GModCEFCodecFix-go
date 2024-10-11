@@ -86,7 +86,7 @@ func process() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("GAME PATH", gmodGamePath)
+	fmt.Println("GAME PATH ", gmodGamePath)
 
 	var wg sync.WaitGroup
 	wg.Add(len(manifest))
@@ -115,7 +115,7 @@ func main() {
 	bgImage.FillMode = canvas.ImageFillContain
 
 	textBox := ui.NewTransparentEntry()
-	textBox.SetText("GmodCEFCodecFix-native demo\n(it only compares the checksums as a proof of concept)")
+	textBox.SetText("GmodCEFCodecFix-native demo\n(it only compares the checksums as a proof of concept)\n\n")
 	textBox.Wrapping = fyne.TextWrapWord
 	textBox.MultiLine = true
 

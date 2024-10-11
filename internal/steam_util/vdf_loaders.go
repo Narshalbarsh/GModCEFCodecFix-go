@@ -44,7 +44,7 @@ func GetGameManifest(steamLibraries *VdfLibraryFolders, appId uint32) (*VdfAppMa
 			&steamGameManifest,
 		)
 		if err != nil {
-			fmt.Printf("Error: %s\n", err)
+			fmt.Printf("%s, skipping...\n", err)
 			continue
 		}
 		// litter.Dump(steamGameManifest)

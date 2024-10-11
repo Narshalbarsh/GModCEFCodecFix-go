@@ -102,15 +102,16 @@ func GetLastLoginUser(steamPath string) (*SteamUser, error) {
 	return nil, errors.New("Couldn't find last steam user")
 }
 
-func FindGamePath(steamPath string, steamUser SteamUser, gameDirName string) (string, error) {
-	possibleGamePaths := []string{
-		filepath.Join(steamPath, "steamapps", "common", gameDirName),
-		filepath.Join(steamPath, "steamapps", steamUser.AccountName, gameDirName),
-	}
-	for _, gamePath := range possibleGamePaths {
-		if stat, err := os.Stat(gamePath); err == nil && stat.IsDir() {
-			// TODO warn about multiple installs
-			return gamePath, nil
+func FindGamePath(steamLibraries VdfLibraryFolders, steamUser SteamUser, gameDirName string) (string, error) {
+	for _, steamLib := range steamLibraries.Libraryfolders {
+		for _, gamePath := range []string{
+			filepath.Join(steamLib.Path, "steamapps", "common", gameDirName),
+			filepath.Join(steamLib.Path, "steamapps", steamUser.AccountName, gameDirName),
+		} {
+			if stat, err := os.Stat(gamePath); err == nil && stat.IsDir() {
+				// TODO warn about multiple installs
+				return gamePath, nil
+			}
 		}
 	}
 	return "", errors.New("Couldn't get game path")

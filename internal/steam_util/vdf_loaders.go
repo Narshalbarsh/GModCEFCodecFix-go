@@ -37,13 +37,14 @@ func GetLoginUsers(steamPath string) (*VdfLoginUsers, error) {
 }
 
 func GetGameManifest(steamLibraries *VdfLibraryFolders, appId uint32) (*VdfAppManifest, error) {
-	for _, steamLib := range steamLibraries.Libraryfolders {
+	for key, steamLib := range steamLibraries.Libraryfolders {
 		var steamGameManifest VdfAppManifest
 		err := initVdfStructFromFile(
 			filepath.Join(steamLib.Path, "steamapps", fmt.Sprintf("appmanifest_%v.acf", appId)),
 			&steamGameManifest,
 		)
 		if err != nil {
+			delete(steamLibraries.Libraryfolders, key)
 			fmt.Printf("%s, skipping...\n", err)
 			continue
 		}

@@ -86,6 +86,7 @@ func process() {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("GAME PATH", gmodGamePath)
 
 	var wg sync.WaitGroup
 	wg.Add(len(manifest))

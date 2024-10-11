@@ -6,16 +6,16 @@ import (
 )
 
 var (
-	kernel32              = syscall.NewLazyDLL("kernel32.dll")
-	procAttachConsole     = kernel32.NewProc("AttachConsole")
-	procGetConsoleWindow  = kernel32.NewProc("GetConsoleWindow")
-	procGetStdHandle      = kernel32.NewProc("GetStdHandle")
-	ATTACH_PARENT_PROCESS = ^uint32(0) // Special value to attach to the parent process
+	kernel32             = syscall.NewLazyDLL("kernel32.dll")
+	procAttachConsole    = kernel32.NewProc("AttachConsole")
+	procGetConsoleWindow = kernel32.NewProc("GetConsoleWindow")
+	procGetStdHandle     = kernel32.NewProc("GetStdHandle")
 )
 
 const (
-	STD_OUTPUT_HANDLE = -11 & 0xFFFFFFFF // Corresponds to (DWORD)-11
-	STD_ERROR_HANDLE  = -12 & 0xFFFFFFFF // Corresponds to (DWORD)-12
+	STD_OUTPUT_HANDLE     = -11 & 0xFFFFFFFF // Corresponds to (DWORD)-11
+	STD_ERROR_HANDLE      = -12 & 0xFFFFFFFF // Corresponds to (DWORD)-12
+	ATTACH_PARENT_PROCESS = ^uint32(0)
 )
 
 // Try to get output in the terminal if we launched it from there,

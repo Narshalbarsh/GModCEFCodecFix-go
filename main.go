@@ -88,6 +88,12 @@ func process() {
 	}
 	fmt.Println("GAME PATH ", gmodGamePath)
 
+	gmodIsReady := steam_util.GameIsInGoodState(gmodManifest)
+	if !gmodIsReady {
+		fmt.Println("Gmod isn't ready")
+		return
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(len(manifest))
 	for filePath, patchInfo := range manifest {
